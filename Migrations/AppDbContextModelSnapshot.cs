@@ -83,38 +83,6 @@ namespace ADHDWebapp.Migrations
                     b.ToTable("ClassMemberships");
                 });
 
-            modelBuilder.Entity("ADHDWebApp.Models.FriendRequest", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("AddresseeId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("RequesterId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Status")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AddresseeId");
-
-                    b.HasIndex("RequesterId");
-
-                    b.ToTable("FriendRequests");
-                });
-
             modelBuilder.Entity("ADHDWebApp.Models.Message", b =>
                 {
                     b.Property<int>("Id")
@@ -296,25 +264,6 @@ namespace ADHDWebapp.Migrations
                     b.Navigation("Class");
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("ADHDWebApp.Models.FriendRequest", b =>
-                {
-                    b.HasOne("ADHDWebApp.Models.User", "Addressee")
-                        .WithMany()
-                        .HasForeignKey("AddresseeId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("ADHDWebApp.Models.User", "Requester")
-                        .WithMany()
-                        .HasForeignKey("RequesterId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Addressee");
-
-                    b.Navigation("Requester");
                 });
 
             modelBuilder.Entity("ADHDWebApp.Models.Message", b =>
