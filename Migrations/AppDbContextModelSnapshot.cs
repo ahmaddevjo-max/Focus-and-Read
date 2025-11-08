@@ -255,6 +255,9 @@ namespace ADHDWebapp.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Gender")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<bool?>("HasADHD")
                         .HasColumnType("bit");
 
