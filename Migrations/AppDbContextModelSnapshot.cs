@@ -156,6 +156,35 @@ namespace ADHDWebapp.Migrations
                     b.ToTable("ClassMemberships");
                 });
 
+            modelBuilder.Entity("ADHDWebApp.Models.Flashcard", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Answer")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Question")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Flashcards");
+                });
+
             modelBuilder.Entity("ADHDWebApp.Models.Message", b =>
                 {
                     b.Property<int>("Id")
@@ -376,6 +405,17 @@ namespace ADHDWebapp.Migrations
                         .IsRequired();
 
                     b.Navigation("Class");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("ADHDWebApp.Models.Flashcard", b =>
+                {
+                    b.HasOne("ADHDWebApp.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("User");
                 });
