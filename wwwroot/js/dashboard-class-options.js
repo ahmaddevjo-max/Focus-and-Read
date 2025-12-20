@@ -14,17 +14,10 @@ function openPrivacyPanel(classId, joinCode, allowJoin) {
 
     // Update UI elements
     const toggle = document.getElementById('cls-privacy-toggle');
-    const codeDisplay = document.getElementById('cls-privacy-code');
-    const statusDisplay = document.getElementById('cls-privacy-status');
     const errorDiv = document.getElementById('cls-privacy-error');
     const successDiv = document.getElementById('cls-privacy-success');
 
     if (toggle) toggle.checked = allowJoin;
-    if (codeDisplay) codeDisplay.textContent = joinCode || '------';
-    if (statusDisplay) {
-        statusDisplay.textContent = allowJoin ? 'New members can join' : 'Joining is disabled';
-        statusDisplay.className = allowJoin ? 'text-success d-block mt-2' : 'text-danger d-block mt-2';
-    }
     if (errorDiv) errorDiv.style.display = 'none';
     if (successDiv) successDiv.style.display = 'none';
 
@@ -35,24 +28,12 @@ function openPrivacyPanel(classId, joinCode, allowJoin) {
     toggleInlinePanel('cls-privacy-panel', event);
 }
 
-// Update status display when toggle changes
+// Update status display and auto-save when toggle changes
 document.addEventListener('DOMContentLoaded', () => {
     const toggle = document.getElementById('cls-privacy-toggle');
-    const statusDisplay = document.getElementById('cls-privacy-status');
 
-    if (toggle && statusDisplay) {
-        toggle.addEventListener('change', () => {
-            const isEnabled = toggle.checked;
-            statusDisplay.textContent = isEnabled ? 'New members can join' : 'Joining is disabled';
-            statusDisplay.className = isEnabled ? 'text-success d-block mt-2' : 'text-danger d-block mt-2';
-        });
-    }
-
-    // Save button handler
-    const saveBtn = document.getElementById('cls-privacy-save-btn');
-    if (saveBtn) {
-        saveBtn.addEventListener('click', async () => {
-            const toggle = document.getElementById('cls-privacy-toggle');
+    if (toggle) {
+        toggle.addEventListener('change', async () => {
             const errorDiv = document.getElementById('cls-privacy-error');
             const successDiv = document.getElementById('cls-privacy-success');
 
@@ -61,13 +42,12 @@ document.addEventListener('DOMContentLoaded', () => {
                     errorDiv.textContent = 'No class selected';
                     errorDiv.style.display = 'block';
                 }
+                // Revert toggle
+                toggle.checked = !toggle.checked;
                 return;
             }
 
             try {
-                saveBtn.disabled = true;
-                saveBtn.innerHTML = '<i class="bi bi-hourglass-split me-2"></i>Saving...';
-
                 if (errorDiv) errorDiv.style.display = 'none';
                 if (successDiv) successDiv.style.display = 'none';
 
@@ -86,23 +66,22 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (data.success) {
                     window.__currentClassPrivacy.allowJoin = toggle.checked;
                     if (successDiv) {
-                        successDiv.textContent = 'Privacy settings saved successfully!';
+                        successDiv.textContent = toggle.checked ? 'New members can now join' : 'Joining disabled';
                         successDiv.style.display = 'block';
                     }
                     setTimeout(() => {
                         if (successDiv) successDiv.style.display = 'none';
-                    }, 3000);
+                    }, 2000);
                 } else {
                     throw new Error(data.error || 'Failed to save privacy settings');
                 }
             } catch (error) {
+                // Revert toggle on error
+                toggle.checked = !toggle.checked;
                 if (errorDiv) {
                     errorDiv.textContent = error.message || 'Failed to save privacy settings';
                     errorDiv.style.display = 'block';
                 }
-            } finally {
-                saveBtn.disabled = false;
-                saveBtn.innerHTML = '<i class="bi bi-check-lg me-2"></i>Save Changes';
             }
         });
     }
